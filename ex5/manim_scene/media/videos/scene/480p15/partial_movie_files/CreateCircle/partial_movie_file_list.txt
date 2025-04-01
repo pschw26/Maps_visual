@@ -1,0 +1,2 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/wq271/GMP_SoSe24/GMP_Exercises/ex5/manim_scene/media/videos/scene/480p15/partial_movie_files/CreateCircle/1185818338_661115485_223132457.mp4'
