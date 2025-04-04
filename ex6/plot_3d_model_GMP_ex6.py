@@ -11,9 +11,17 @@ import gemgis as gg
 import matplotlib.pyplot as plt 
 import numpy as np
 import pyvista as pv 
+from shapely.geometry import Point
+import pandas as pd 
+import gempy as gp
+import gempy_viewer as gpv
+
+import os
+os.environ['GDAL_DATA'] = 'C:/Users/pschw/anaconda3/envs/gemgis/Library/share/gdal'
 
 
-file_path = 'C:/Users/wq271/GMP_SoSe24/GMP_Exercises/ex6/GMP_ex6/'
+# add topo raster
+file_path = 'C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex6/'
 
 dem_work = rasterio.open(file_path + 'GMP_ex6_interpol_raster.tif')
 # contours
@@ -21,51 +29,72 @@ dem_work = rasterio.open(file_path + 'GMP_ex6_interpol_raster.tif')
 grid = gg.visualization.create_dem_3d(dem=np.flipud(dem_work.read(1)), extent=[0,838,0,404])
 # lines = gg.visualization.create_lines_3d_polydata(gdf=)
 
-# grid
-
-p = pv.Plotter()
-
-p.add_mesh(mesh=grid, scalars=grid.z, cmap='gist_earth')
-
-p.show_grid(color='black')
-p.set_background(color='white')
-p.show()
-#%%
-import rasterio
-import pyvista as pv
-import numpy as np
-import gemgis as gg
-
-file_path = 'C:/Users/wq271/GMP_SoSe24/GMP_Exercises/ex6/GMP_ex6/'
-
-# Open the DEM raster file
-dem_work = rasterio.open(file_path + 'GMP_ex6_interpol_raster.tif')
-
-# Read the DEM data and flip it (as you did before)
-# dem_data = dem_work.read(1)
+grid.points[:,2] *= 0.5
 
 
-# Create the 3D grid from the DEM data
-grid = gg.visualization.create_dem_3d(dem=dem_work, extent=[0, 838, 0, 404])
+# fix, ax = plt.subplots(1, figsize=(10, 10))
+# # topo.plot(ax=ax, aspect='equal', column='Z', cmap='gist_earth')
+# im = plt.imshow(np.flipud(dem_work.read(1)), origin='lower', extent=[0, 838, 0, 404], cmap='gist_earth')
+# cbar = plt.colorbar(im)
+# cbar.set_label('Altitude [m]')
+# ax.set_xlabel('X [m]')
+# ax.set_ylabel('Y [m]')
+# ax.set_xlim(0, 838)
+# ax.set_ylim(0, 404)
 
-# Ensure the scalar field has the same shape as the grid. Reshape the DEM data to match the grid's point structure
-# Reshape dem_data if necessary, based on grid dimensions
 
-# Plot the 3D grid with proper scalar field and colormap
-p = pv.Plotter()
+# add interfaces
+interfaces_raw = gpd.read_file(file_path + 'shapes_layers_fault.shp')
+# interfaces.head()
+series_object =  interfaces_raw.translate(-205.3966599010873892, 1240.6153075132974664)
 
-# Ensure the scalar field and colormap are applied correctly
-p.add_mesh(grid, scalars=np.flipud(dem_work.read(1)), cmap="coolwarm", show_edges=False)
+interfaces = gpd.GeoDataFrame(pd.DataFrame(interfaces_raw), geometry=series_object, crs="EPSG:4326")
+# extract z coords for points in interfaces and plot them
+interfaces_coords = gg.vector.extract_xyz(gdf=interfaces, dem=dem_work)
+# interfaces_coords
 
-# Add grid lines and background settings
-p.show_grid(color='black')
-p.set_background(color='white')
 
-# Show the plot
-p.show()
-#%%
+# add orientations
+orientations_raw = gpd.read_file(file_path + 'orientations.shp')
+df_orientations = pd.DataFrame(orientations_raw)
+df_orientations.to_csv(file_path+'orientations.csv', index=False)
+# interfaces.head()
+series_object =  orientations_raw.translate(-205.3966599010873892, 1240.6153075132974664)
 
-import matplotlib.pyplot as plt
-plt.imshow( np.flipud(dem_work.read(1)), cmap='gist_earth')
-plt.colorbar()
-plt.show()
+orientations = gpd.GeoDataFrame(pd.DataFrame(orientations_raw), geometry=series_object, crs="EPSG:4326")
+
+
+#create model
+# geo_model = gp.create_geomodel()
+# geo_model
+# gp.init_data(geo_model, [0, 838, 0, 404, 570, 1144], [100, 100, 100],
+#               surface_points_df=interfaces_coords,
+#               orientations_df=orientations,
+#               default_values=True)
+#%% plot model 
+geo_model: gp.data.GeoModel = gp.create_geomodel(
+    project_name='GMP_ex6_model',
+    extent=[0, 838, 0, 404, 570, 1144],
+    refinement=6,  # * Here we define the number of octree levels. If octree levels are defined, the resolution is ignored.
+    importer_helper=gp.data.ImporterHelper(
+        path_to_orientations=file_path + "orientations_transformed.csv",
+        path_to_surface_points=file_path + "raster.csv",
+    )
+)
+
+gpv.plot_3d(geo_model, show_data=True, image=False, plotter_type='basic')
+
+
+
+# p = pv.Plotter()
+
+# p.add_mesh(mesh=grid, scalars=grid.points[:, 2], cmap='gist_earth')
+
+# p.show_grid(color='black')
+# p.set_background(color='white')
+# p.show()
+
+# Extent interfaces
+# 205.3966599010873892,-1240.6153075132974664 : 1037.9668758311170222,-1041.0871447811316557
+
+
