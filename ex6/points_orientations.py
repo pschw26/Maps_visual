@@ -15,23 +15,34 @@ import pandas as pd
 import gempy as gp
 import gempy_viewer as gpv
 
+import sys
+import os
 
-# add topo raster
-file_path = 'C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex6/'
+# Repository-Pfad dynamisch hinzufügen
+repo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, repo_path)
+
+task = r'\ex6'
+
+# # add topo raster
+# file_path = 'C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex6/'
 
 #%% create raw csv to later manipulate, so it fits with csv datapoints from raster (x,y,z) 
 
-orientations_raw = gpd.read_file(file_path + 'orientations.shp')
-df_orientations = pd.DataFrame(orientations_raw)
-df_orientations.to_csv(file_path+'orientations.csv', index=False)
+orientations_raw = gpd.read_file(repo_path + task + r'\orientations.shp')
+series_object =  orientations_raw.translate(-205.3966599010873892, 1240.6153075132974664)
+
+orientations = gpd.GeoDataFrame(pd.DataFrame(orientations_raw), geometry=series_object, crs="EPSG:4326")
+df_orientations = pd.DataFrame(orientations)
+df_orientations.to_csv(repo_path + task + r'\orientations.csv', index=False)
 
 #%% create transformed orientationpoints 
 
 # Lade die Orientierungspunkte
-orientations = pd.read_csv(file_path+"orientations.csv")
+orientations = pd.read_csv(repo_path + task+"/orientations.csv")
 
 # Lade das Raster, um die Transformationsmatrix zu bekommen
-with rasterio.open(file_path+"GMP_ex6_interpol_raster.tif") as dataset:
+with rasterio.open(repo_path + task + "/GMP_ex6_interpol_raster.tif") as dataset:
     transform = dataset.transform
     
 # Transformiere Pixelkoordinaten in Weltkoordinaten
@@ -39,12 +50,11 @@ orientations[["x_world", "y_world"]] = orientations.apply(
     lambda row: rasterio.transform.xy(transform, int(row["Y"]), int(row["X"])), axis=1, result_type="expand"
 )
 
-
 # Aktualisiere das DataFrame
-orientations["x_world"] = x_world
-orientations["y_world"] = y_world
+# orientations["x_world"] = x_world
+# orientations["y_world"] = y_world
 
-orientations.to_csv(file_path+"orientations_transformed.csv", index=False)
+orientations.to_csv(repo_path + task + "/orientations_transformed.csv", index=False)
 
 
 

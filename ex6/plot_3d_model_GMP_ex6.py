@@ -15,15 +15,20 @@ from shapely.geometry import Point
 import pandas as pd 
 import gempy as gp
 import gempy_viewer as gpv
-
 import os
-os.environ['GDAL_DATA'] = 'C:/Users/pschw/anaconda3/envs/gemgis/Library/share/gdal'
+import sys
+
+# os.environ['GDAL_DATA'] = 'C:/Users/pschw/anaconda3/envs/gemgis/Library/share/gdal'
 
 
 # add topo raster
-file_path = 'C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex6/'
+repo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, repo_path)
 
-dem_work = rasterio.open(file_path + 'GMP_ex6_interpol_raster.tif')
+task = r'\ex6'
+
+
+dem_work = rasterio.open(repo_path + task + 'GMP_ex6_interpol_raster.tif')
 # contours
 
 grid = gg.visualization.create_dem_3d(dem=np.flipud(dem_work.read(1)), extent=[0,838,0,404])
@@ -44,7 +49,7 @@ grid.points[:,2] *= 0.5
 
 
 # add interfaces
-interfaces_raw = gpd.read_file(file_path + 'shapes_layers_fault.shp')
+interfaces_raw = gpd.read_file(repo_path + task + 'shapes_layers_fault.shp')
 # interfaces.head()
 series_object =  interfaces_raw.translate(-205.3966599010873892, 1240.6153075132974664)
 
@@ -55,7 +60,7 @@ interfaces_coords = gg.vector.extract_xyz(gdf=interfaces, dem=dem_work)
 
 
 # add orientations
-orientations_raw = gpd.read_file(file_path + 'orientations.shp')
+orientations_raw = gpd.read_file(repo_path + task + 'orientations.shp')
 df_orientations = pd.DataFrame(orientations_raw)
 df_orientations.to_csv(file_path+'orientations.csv', index=False)
 # interfaces.head()
@@ -77,8 +82,8 @@ geo_model: gp.data.GeoModel = gp.create_geomodel(
     extent=[0, 838, 0, 404, 570, 1144],
     refinement=6,  # * Here we define the number of octree levels. If octree levels are defined, the resolution is ignored.
     importer_helper=gp.data.ImporterHelper(
-        path_to_orientations=file_path + "orientations_transformed.csv",
-        path_to_surface_points=file_path + "raster.csv",
+        path_to_orientations=repo_path + task + "orientations_transformed.csv",
+        path_to_surface_points=repo_path + task + "raster.csv",
     )
 )
 

@@ -12,12 +12,16 @@ Created on Mon Mar 17 14:57:06 2025
 import geopandas as gpd
 import gemgis as gg
 import matplotlib.pyplot as plt  
+import os 
+import sys
 
 # INTERPOLATE TOPOGRAPHY
+repo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, repo_path)
 
-file_path= 'C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex6/'
+task = r'\ex6'
 
-contours = gpd.read_file(file_path + 'topography_GMP_ex6.shp')
+contours = gpd.read_file(repo_path + task + 'topography_GMP_ex6.shp')
 
 # contours.head()
 
@@ -42,7 +46,7 @@ plt.colorbar(im)
 
 import pyvista as pv
 
-mesh = gg.visualization.read_raster(path=file_path + 'GMP_ex6_interpol_raster.tif',
+mesh = gg.visualization.read_raster(path=repo_path + task + 'GMP_ex6_interpol_raster.tif',
                                     nodata_val=10000.0,
                                     name='Elevation [m]')
 
@@ -65,10 +69,19 @@ p.show()
 import rasterio
 import numpy as np
 import pandas as pd
-file_path= 'C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex6/'
+import os 
+import sys
+
+# INTERPOLATE TOPOGRAPHY
+repo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, repo_path)
+
+task = r'\ex6'
+
+
 
 # Beispiel: Öffnen des Rasters mit Rasterio
-with rasterio.open(file_path+"GMP_ex6_interpol_raster.tif") as src:
+with rasterio.open(repo_path + task + "GMP_ex6_interpol_raster.tif") as src:
     raster = src.read(1)  # Lies das erste Band (Z-Werte)
     transform = src.transform  # Georeferenzierung
 
@@ -86,7 +99,7 @@ z_values = raster
 xyz_coordinates = np.column_stack((x_world, y_world, z_values.flatten()))
 df = pd.DataFrame(xyz_coordinates)
 df['formation'] = 'layer'
-df.to_csv(file_path+'raster.csv', index=False)
+df.to_csv(repo_path + task + 'raster.csv', index=False)
 
 
 # Beispielausgabe der ersten paar Koordinaten
