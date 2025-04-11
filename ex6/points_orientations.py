@@ -39,10 +39,10 @@ df_orientations.to_csv(repo_path + task + r'\orientations.csv', index=False)
 #%% create transformed orientationpoints 
 
 # Lade die Orientierungspunkte
-orientations = pd.read_csv(repo_path + task+"/orientations.csv")
+orientations = pd.read_csv(repo_path + task+r"/orientations.csv")
 
 # Lade das Raster, um die Transformationsmatrix zu bekommen
-with rasterio.open(repo_path + task + "/GMP_ex6_interpol_raster.tif") as dataset:
+with rasterio.open(repo_path + task + r"/GMP_ex6_interpol_raster.tif") as dataset:
     transform = dataset.transform
     
 # Transformiere Pixelkoordinaten in Weltkoordinaten
@@ -54,7 +54,7 @@ orientations[["x_world", "y_world"]] = orientations.apply(
 # orientations["x_world"] = x_world
 # orientations["y_world"] = y_world
 
-orientations.to_csv(repo_path + task + "/orientations_transformed.csv", index=False)
+orientations.to_csv(repo_path + task + r"/orientations_transformed.csv", index=False)
 
 
 

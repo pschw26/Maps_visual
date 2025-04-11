@@ -17,7 +17,7 @@ sys.path.insert(0, repo_path)
 task = r'\ex6'
 
 
-gmap = gpd.read_file(repo_path + task + 'interfaces_GMP_ex6.shp')
+gmap = gpd.read_file(repo_path + task + r'\interfaces_GMP_ex6.shp')
 # gmap
 
 import matplotlib.pyplot as plt

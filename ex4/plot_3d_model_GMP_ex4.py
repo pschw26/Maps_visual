@@ -100,83 +100,118 @@ import sys
 repo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, repo_path)
 
-task = r'\ex6'
+task = r'\ex4'
 
-# orientations = gpd.read_file(repo_path + task + r'\gempy_geomodel\orientations.shp')
-# df_orientations = pd.DataFrame(orientations)
-# df_orientations.to_csv(repo_path + task + r'\gempy_geomodel\orientations.csv', index=False)
-
-# surface = gpd.read_file(repo_path + task + r'\gempy_geomodel\surface_points.shp')
-# df_surface = pd.DataFrame(surface)
-# df_surface.to_csv(repo_path + task + r'\gempy_geomodel\surface_points.csv', index=False)
-
-
-# surface_df = pd.read_csv(repo_path + task + r"\gempy_geomodel\surface_points.csv")
-# orientation_df = pd.read_csv(repo_path + task + r"\gempy_geomodel\orientations.csv")
-
+extent = pd.read_csv(repo_path + task + r'\extent_csv.csv', sep=',')
 
 data = gp.create_geomodel(
-    project_name='GMP_ex6_model',
-    extent=[203, 1038, -1305, -906, 500, 1200],
-    refinement=7, 
+    project_name='GMP_ex4_model',
+    extent=[int(extent.iloc[0,1])-1, int(extent.iloc[1,1])+1, 
+            int(extent.iloc[0,2])-1, int(extent.iloc[1,2])+1, 0, 800],
+    refinement=6, 
     importer_helper=gp.data.ImporterHelper(
-        path_to_orientations=repo_path + task + r"\gempy_geomodel\orientations.csv",
-        path_to_surface_points=repo_path + task + r"\gempy_geomodel\surface_points.csv"
+        path_to_orientations=repo_path + task + r"\orientations_csv.csv",
+        path_to_surface_points=repo_path + task + r"\surface_points_csv.csv"
     )
 )
 
 
-# gp.set_surface_points(data, surface_df, surface_column='formation')
-# gp.set_orientations(data, orientation_df, surface_column='formation')
-
 # Map geological series to surfaces
 gp.map_stack_to_surfaces(
     gempy_model=data,
-    mapping_object={
-        "Fault_Series": ['fault'],
-        "Strat_Series": ['layer']
-    }
+    mapping_object={"Strat_Series": ('Selm_Folge', 'Dünensandstein', 
+                                     'Wackenbach_Folge', 'Enztal_Sandstein')}
 )
 
-# Define fault groups
-data.structural_frame.structural_groups[0].structural_relation = StackRelationType.FAULT
-data.structural_frame.fault_relations = np.array([[0, 1], [0, 0]])
-
-# origin: X = 203,944; Y = -1305,260
-
-
-# gpv.plot_3d(geo_data, show_data=True, show_boundaries=True, show_lith=True)
-# gpv.plot_3d(geo_model, show_data=True, image=False, plotter_type='basic')
-
-
-# Add topo raster
 
 gp.set_topography_from_random(
     grid=data.grid,
     fractal_dimension=1.2,
-    d_z=np.array([800, 1000]),
+    d_z=np.array([600, 800]),
     topography_resolution=np.array([100, 100]),
 )
 
-# gp.set_topography_from_file(grid=data, 
-#                             filepath= repo_path + task + r'\GMP_ex6_interpol_raster.tif', 
-#                             crop_to_extent = [203, 1038, -1305, -906, 500, 1200])
 
+# Beispiel: eine Linie von Punkt A nach Punkt B (egal wie schräg sie ist)
+section_coords_AB = ([826.366, -1069.119], [747.043, -167.843], [300, 300])  # X, Y Koordinaten
+section_coords_CD = ([410.603, -1069.119], [1339.231, -167.843], [300, 300])
 
-# Compute the geological model
+# Setze den Pfad für die Cross-Section
+gp.set_section_grid(
+    data.grid,
+    section_dict={  # beliebiger Name
+        r'Cross section $\overline{\text{AB}}$': section_coords_AB,
+        r'Cross section $\overline{\text{CD}}$': section_coords_CD
+    }  
+)
+
 gp.compute_model(data)
 geo_data = data
 
-# Extrahieren der Lösungen
-sol = data.solutions
+
+gpv.plot_2d(
+    data,
+    section_names=[r'Cross section $\overline{\text{AB}}$'],
+    show_topography=True,
+    show_data=False,  # ax ist hier ein Array mit 2 Subplots
+)
+
+gpv.plot_2d(
+    data,
+    section_names=[r'Cross section $\overline{\text{CD}}$'],
+    show_topography=True,
+    show_data=False,  # ax ist hier ein Array mit 2 Subplots
+)
+#%%
+
+gpv.plot_3d(geo_data, show_data=False, show_boundaries=True, show_lith=True)
+# # gpv.plot_3d(geo_model, show_data=True, image=False, plotter_type='basic')
+
+import pickle 
+
+with open(repo_path + task + r'\GMP_ex4_geomodel.pkl', 'wb') as f:
+    pickle.dump(geo_data, f)
+
+#%%
+
+import pickle
+import sys
+import gempy_viewer as gpv
+
+repo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, repo_path)
+
+task = r'\ex4'
+
+# Laden des gespeicherten GeoModels
+with open(repo_path + task + r'\GMP_ex4_geomodel.pkl', 'rb') as f:
+    geo_data = pickle.load(f)
+    
+gpv.plot_3d(geo_data, show_data=False, show_boundaries=True, show_lith=True)
+
+#%%
+# # Add topo raster
+
+# gp.set_topography_from_random(
+#     grid=data.grid,
+#     fractal_dimension=1.2,
+#     d_z=np.array([800, 1000]),
+#     topography_resolution=np.array([100, 100]),
+# )
+
+# # gp.set_topography_from_file(grid=data, 
+# #                             filepath= repo_path + task + r'\GMP_ex6_interpol_raster.tif', 
+# #                             crop_to_extent = [203, 1038, -1305, -906, 500, 1200])
+
+
+# # Compute the geological model
+# gp.compute_model(data)
+# geo_data = data
+
+# # Extrahieren der Lösungen
+# sol = data.solutions
 
 # gpv.plot_2d(data, show_topography=True)
-gpv.plot_3d(geo_data, show_data=False, show_topography=True, show_boundaries=True, show_lith=True)
-#%% 
-os.chdir(r'C:\Daten\Peter\Studium\A_Programme_Hiwi\Projekte\Maps_visual\ex6')
-
-from mapping import export2vtk
-
-export2vtk(sol, vtk_path=repo_path + task)
+# gpv.plot_3d(geo_data, show_data=False, show_topography=True, show_boundaries=True, show_lith=True)
 
 
