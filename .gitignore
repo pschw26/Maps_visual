@@ -170,6 +170,8 @@ time.txt
 # manim animation .mp4 files 
 *.mp4
 *.mov
+*.png 
+*.jpg 
 __pycache__/
 *.log
 
