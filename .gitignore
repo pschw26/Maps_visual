@@ -172,3 +172,12 @@ time.txt
 *.mov
 __pycache__/
 *.log
+
+# qgis files 
+*.shp
+*.cpg
+*.dbf
+*.prj
+*.shx
+*.qmd
+*.pdf
