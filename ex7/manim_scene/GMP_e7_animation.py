@@ -108,13 +108,13 @@ class Folds(ThreeDScene):
             strike.set_color(colors[i%5])
             
         for i in range(2):
-            strikes[3+i*10].shift([0, strikes[2].get_end()[1]-strikes[3+10*i].get_end()[1]+5.5, 0])
-            strikes[6+i*10].shift([0, strikes[2].get_end()[1]-strikes[6+10*i].get_end()[1]+5.5, 0])
+            strikes[3+i*10].shift([0, strikes[2].get_end()[1]-strikes[3+10*i].get_end()[1]+0.9, 0])
+            strikes[6+i*10].shift([0, strikes[2].get_end()[1]-strikes[6+10*i].get_end()[1]+0.9, 0])
             # shift lower layer of strikes 
-            strikes[8+i*10].shift([0, strikes[7].get_start()[1]-strikes[8+10*i].get_start()[1]-5.5, 0])
-            strikes[11+i*10].shift([0, strikes[7].get_start()[1]-strikes[11+10*i].get_start()[1]-5.5, 0])
-        strikes[1].shift([0, strikes[2].get_end()[1]-strikes[1].get_end()[1]-5.5, 0])
-        strikes[23].shift([0, strikes[7].get_end()[1]-strikes[23].get_end()[1]+5.5, 0])
+            strikes[8+i*10].shift([0, strikes[7].get_start()[1]-strikes[8+10*i].get_start()[1]-0.9, 0])
+            strikes[11+i*10].shift([0, strikes[7].get_start()[1]-strikes[11+10*i].get_start()[1]-0.9, 0])
+        strikes[1].shift([0, strikes[2].get_end()[1]-strikes[1].get_end()[1]-0.9, 0])
+        strikes[23].shift([0, strikes[7].get_end()[1]-strikes[23].get_end()[1]+0.9, 0])
             
         
         # get strike intersection points
@@ -182,9 +182,9 @@ class Folds(ThreeDScene):
 #         self.camera.frame_center= [0 ,0 , 1]
         self.set_camera_orientation(theta=0*DEGREES, phi=90*DEGREES, zoom=1)
         self.add(axes, x_label, y_label, z_label)
-        self.begin_ambient_camera_rotation(about='theta', rate=-0.75)
-        self.wait(2)
-        self.stop_ambient_camera_rotation()
+        # self.begin_ambient_camera_rotation(about='theta', rate=-0.75)
+        # self.wait(2)
+        # self.stop_ambient_camera_rotation()
         # self.move_camera(phi = 90*DEGREES, theta = 0)
         # self.wait(1)
         # self.move_camera(phi = 0, theta = 0)
