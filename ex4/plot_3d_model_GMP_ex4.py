@@ -19,6 +19,8 @@ from gempy_engine.core.data.stack_relation_type import StackRelationType
 import os
 import sys
 
+''' Interpreter path for gemgis environment: C:/Users/pschw/anaconda3/envs/gemgis/python.exe '''
+
 # os.environ['GDAL_DATA'] = 'C:/Users/pschw/anaconda3/envs/gemgis/Library/share/gdal'
 
 
@@ -162,7 +164,7 @@ gpv.plot_2d(
     show_topography=True,
     show_data=False,  # ax ist hier ein Array mit 2 Subplots
 )
-#%%
+#%% save model to files
 
 gpv.plot_3d(geo_data, show_data=False, show_boundaries=True, show_lith=True)
 # # gpv.plot_3d(geo_model, show_data=True, image=False, plotter_type='basic')
@@ -172,11 +174,14 @@ import pickle
 with open(repo_path + task + r'\GMP_ex4_geomodel.pkl', 'wb') as f:
     pickle.dump(geo_data, f)
 
-#%%
+#%% plot model from files
 
 import pickle
 import sys
 import gempy_viewer as gpv
+import os
+import gempy as gp
+from matplotlib import pyplot as plt
 
 repo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, repo_path)
@@ -186,8 +191,42 @@ task = r'\ex4'
 # Laden des gespeicherten GeoModels
 with open(repo_path + task + r'\GMP_ex4_geomodel.pkl', 'rb') as f:
     geo_data = pickle.load(f)
-    
+
+# 3D plot
 gpv.plot_3d(geo_data, show_data=False, show_boundaries=True, show_lith=True)
+
+
+# 2D plots
+
+section_coords_AB = ([826.366, -1069.119], [747.043, -167.843], [300, 300])  # X, Y Koordinaten
+section_coords_CD = ([410.603, -1069.119], [1339.231, -167.843], [300, 300])
+
+# Setze den Pfad für die Cross-Section
+gp.set_section_grid(
+    geo_data.grid,
+    section_dict={  # beliebiger Name
+        r'Cross section $\overline{\text{AB}}$': section_coords_AB,
+        r'Cross section $\overline{\text{CD}}$': section_coords_CD
+    }  
+)
+
+
+# gpv.plot_2d(
+#     geo_data,
+#     section_names=[r'Cross section $\overline{\text{AB}}$'],
+#     show_topography=True,
+#     show_data=False,  # ax ist hier ein Array mit 2 Subplots
+# )
+
+# gpv.plot_2d(
+#     geo_data,
+#     n_axis=2,
+#     section_names=[r'Cross section $\overline{\text{CD}}$'],
+#     show_topography=True,
+#     show_data=False,
+#     show=False, 
+# )
+
 
 #%%
 # # Add topo raster
