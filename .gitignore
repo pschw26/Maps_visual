@@ -176,6 +176,7 @@ __pycache__/
 *.log
 
 # qgis files 
+*.pkl
 *.shp
 *.cpg
 *.dbf
