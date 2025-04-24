@@ -8,12 +8,16 @@ Created on Mon Mar 17 17:51:29 2025
 import geopandas as gpd
 import gemgis as gg
 import matplotlib.pyplot as plt  
+import os 
+import sys
 
-file_path = 'C:/Users/wq271/GMP_SoSe24/GMP_Exercises/ex6/GMP_ex6/'
+repo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, repo_path)
+
+task = r'\ex6'
 
 
-
-gmap = gpd.read_file(file_path + 'interfaces_GMP_ex6.shp')
+gmap = gpd.read_file(repo_path + task + r'\interfaces_GMP_ex6.shp')
 # gmap
 
 import matplotlib.pyplot as plt
