@@ -19,7 +19,11 @@ import sys
 repo_path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, repo_path)
 
+<<<<<<< HEAD
+file_path= 'C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex6/'
+=======
 task = r'\ex6'
+>>>>>>> origin/topomodel
 
 contours = gpd.read_file(repo_path + task + r'\topography_GMP_ex6.shp')
 
@@ -69,6 +73,12 @@ p.show()
 import rasterio
 import numpy as np
 import pandas as pd
+<<<<<<< HEAD
+file_path= 'C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex6/'
+
+# Beispiel: Öffnen des Rasters mit Rasterio
+with rasterio.open(file_path+"GMP_ex6_interpol_raster.tif") as src:
+=======
 import os 
 import sys
 
@@ -82,6 +92,7 @@ task = r'\ex6'
 
 # Beispiel: Öffnen des Rasters mit Rasterio
 with rasterio.open(repo_path + task + r"\GMP_ex6_interpol_raster.tif") as src:
+>>>>>>> origin/topomodel
     raster = src.read(1)  # Lies das erste Band (Z-Werte)
     transform = src.transform  # Georeferenzierung
 
@@ -99,7 +110,11 @@ z_values = raster
 xyz_coordinates = np.column_stack((x_world, y_world, z_values.flatten()))
 df = pd.DataFrame(xyz_coordinates)
 df['formation'] = 'layer'
+<<<<<<< HEAD
+df.to_csv(file_path+'raster.csv', index=False)
+=======
 df.to_csv(repo_path + task + r'\raster.csv', index=False)
+>>>>>>> origin/topomodel
 
 
 # Beispielausgabe der ersten paar Koordinaten

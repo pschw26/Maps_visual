@@ -15,6 +15,15 @@ import pandas as pd
 import gempy as gp
 import gempy_viewer as gpv
 
+# add topo raster
+file_path = 'C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex6/'
+
+#%% create raw csv to later manipulate, so it fits with csv datapoints from raster (x,y,z) 
+
+orientations_raw = gpd.read_file(file_path + 'orientations.shp')
+df_orientations = pd.DataFrame(orientations_raw)
+df_orientations.to_csv(file_path+'orientations.csv', index=False)
+
 import sys
 import os
 
@@ -39,7 +48,9 @@ df_orientations.to_csv(repo_path + task + r'\orientations.csv', index=False)
 #%% create transformed orientationpoints 
 
 # Lade die Orientierungspunkte
-orientations = pd.read_csv(repo_path + task+r"/orientations.csv")
+
+orientations = pd.read_csv(file_path+"orientations.csv")
+
 
 # Lade das Raster, um die Transformationsmatrix zu bekommen
 with rasterio.open(repo_path + task + r"/GMP_ex6_interpol_raster.tif") as dataset:
