@@ -64,14 +64,13 @@ class Folds(ThreeDScene):
             v_range = [-3.5, 3.5],
             resolution = resol).set_style(fill_opacity = 1).set_color(BLUE)
         
-        for i in range(5):
-            if i != 2:
-                FAP = Surface(
-                    lambda u, v: axes.c2p(*self.h(u, v, i)),
-                    u_range = [-3.5, 3.5],
-                    v_range = [-3.5, 3.5],
-                    resolution = resol).set_style(fill_opacity = 0.5).set_color(RED)
-                FA_planes.append(FAP)
+        for i in range(4):
+            FAP = Surface(
+                lambda u, v: axes.c2p(*self.h(u, v, i)),
+                u_range = [-3.5, 3.5],
+                v_range = [-3.5, 3.5],
+                resolution = resol).set_style(fill_opacity = 0.5).set_color(RED)
+            FA_planes.append(FAP)
                         
         for i in range(5):
             surf_i = Surface(
@@ -178,7 +177,7 @@ class Folds(ThreeDScene):
         surf_0.set_style(fill_opacity = 1)
         # self.add(surf_0)
 
-        Folds.rotate(rot_angle, axis=([1, 0, 0]))
+        # Folds.rotate(rot_angle, axis=([1, 0, 0]))
 
 
         x_label = MathTex("x").move_to(axes.c2p(5, 0, 0) + RIGHT)
@@ -223,56 +222,56 @@ class Folds(ThreeDScene):
         # self.wait(1)
         # self.move_camera(phi = 0, theta = 0)
          
-        # problem intro; show folds and surface 
+        # problem intro; show folds and rotate them  
         self.add(axes, x_label, y_label, z_label)
         self.set_camera_orientation(theta=0*DEGREES, phi=60*DEGREES, zoom=1)
         self.begin_ambient_camera_rotation(about='theta', rate=0.75)
         self.wait(1)
         self.play(Create(Folds))
         self.wait(1)
-        self.play(Create(surf_0))
+        self.play(Folds.animate.rotate(rot_angle, axis=[1, 0, 0]), run_time=3)
+        # self.play(Create(surf_0))
+        self.wait(1)
+        self.play(*[Create(p) for p in limb_planes])
         self.wait(2)
+        self.play(*[Uncreate(p) for p in limb_planes])
+        self.stop_ambient_camera_rotation()
+
 
         
-        # create fold limb plaes and add strikes on them
+        # show strikes form above 
+        self.move_camera(phi = 0, theta= 0)
+        self.wait(1)
+        self.play(Create(surf_0))
+        self.wait(1)
         self.play(*[Create(s) for s in strikes], run_time=3)
-        self.move_camera(phi=90*DEGREES)
-        self.wait(4)
-        self.stop_ambient_camera_rotation()
+        # self.move_camera(phi=90*DEGREES)
+        self.wait(2)
+        self.play(Uncreate(surf_0))
+        # self.stop_ambient_camera_rotation()
         
         # add intersection points and construct FA's show limb planes
         self.play(*[Create(p) for p in intersect_points])
         self.wait(1)
-        self.move_camera(phi=60*DEGREES, zoom=1.5)
-        self.play(Uncreate(surf_0))
-        self.play(*[Create(p) for p in limb_planes])
-        self.begin_ambient_camera_rotation(about='theta', rate=0.75)
-        self.wait(4)
-        self.stop_ambient_camera_rotation()
-        self.play(*[Uncreate(p) for p in limb_planes])
-        self.wait(1)
-
-        
-        
-        self.begin_ambient_camera_rotation(about='theta', rate= 0.75)
-        self.wait(1)
-        self.play(Uncreate(Folds))
-        self.wait(1)
-        self.play(*[Create(p) for p in fold_axes[::2]], run_time=5)
+        self.move_camera(phi=90*DEGREES)
         self.wait(2)
-        self.stop_ambient_camera_rotation()
-        self.move_camera(phi=0, theta=0, zoom=0.75)
-        self.wait(2)
-        self.play(*[Create(p) for p in fold_axes[1::2]], run_time=3)
+        self.move_camera(phi=0*DEGREES)
+ 
+        
+        self.play(*[Create(p) for p in fold_axes[::2]])
         self.wait(1)
+        self.move_camera(phi=90*DEGREES)
+        self.wait(2)
+        self.play(*[Create(p) for p in fold_axes[1::2]])
+        self.wait(1)
+        self.move_camera(phi=0*DEGREES)
+        self.wait(2)
         self.move_camera(phi=60*DEGREES, theta=45*DEGREES, zoom=1)
         self.play(*[Create(p) for p in FA_planes])
         self.begin_ambient_camera_rotation(about='theta', rate= 0.75)
-        self.wait(1)
-        self.play(Create(Folds), Create(surf_0))
-        self.wait(3)
+        self.wait(4)
         self.stop_ambient_camera_rotation()
-        self.move_camera(phi=0, theta=0, zoom=0.75)
+        self.move_camera(phi=0, theta=0)
         self.wait(2)
         
                 
