@@ -174,7 +174,7 @@ gpv.plot_2d(
     show_boundaries=True,
     show_data=False,
     show_surfaces=True,
-    legend = False,
+    legend = True,
     kwargs_topography= {'hillshade' : False, 'azdeg': 135, 'altdeg': 30},
     # hillshade_kwargs={'azimuth': 0, 'altitude': 90},
     # kwargs_contour ={'levels': 10, 'colors': 'black', 'linewidths': 0.5}
@@ -215,10 +215,10 @@ sys.path.insert(0, repo_path)
 task = r'\ex8\simple_model'
 
 # Laden des gespeicherten GeoModels
-with open(repo_path + task + r'\GMP_ex8_simple_geomodel.pkl', 'rb') as f:
+with open(repo_path + task + r'\GMP_ex8_simple_translated_geomodel.pkl', 'rb') as f:
     geo_data = pickle.load(f)
     
-gpv.plot_3d(geo_data, show_data=False, show_boundaries=True, show_lith=True)
+gpv.plot_3d(geo_data, show_data=False, show_boundaries=False, show_lith=True)
 
 #%% Add topo raster (not yet included in gempy)
 

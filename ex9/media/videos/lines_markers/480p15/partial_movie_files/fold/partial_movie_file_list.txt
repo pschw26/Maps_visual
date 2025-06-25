@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex9/media/videos/lines_markers/480p15/partial_movie_files/fold/3655247662_2114191919_2790186455.mp4'
+file 'file:C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex9/media/videos/lines_markers/480p15/partial_movie_files/fold/1695261722_1849653498_4142114017.mp4'
+file 'file:C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex9/media/videos/lines_markers/480p15/partial_movie_files/fold/1695261722_985520821_539158912.mp4'
+file 'file:C:/Daten/Peter/Studium/A_Programme_Hiwi/Projekte/Maps_visual/ex9/media/videos/lines_markers/480p15/partial_movie_files/fold/1695261722_548731573_3411174058.mp4'
