@@ -87,7 +87,7 @@ class crosscut(ThreeDScene):
 
 
         # strikes trans
-        strikes_hanging_trans = VGroup(*[line.copy().shift([-np.sqrt(0.125), -np.sqrt(0.125), 0]).set_color(GREEN_B)
+        strikes_hanging_trans = VGroup(*[line.copy().shift([-np.sqrt(0.125), 0 , 0]).set_color(GREEN_B) #TODO: changed disp vector
                                          for line in strikes_hanging])
         
         strikes_hanging_trans_projected = VGroup(*[line.copy().shift([-0.125/np.cos(np.pi/4), 0, 0]).set_color(GREEN_B)
@@ -128,7 +128,7 @@ class crosscut(ThreeDScene):
                               for i,line in enumerate(strikes_foot_projected)]
         
         # labels for fault 
-        strike_labels_fault = [MathTex(rf'{475-i*25}_\text{{fault}}')
+        strike_labels_fault = [MathTex(rf'{425-i*25}_\text{{fault}}')
                              .move_to(line.get_end()+ 0.3*RIGHT)
                              .scale(0.4)
                              .set_color(RED)
@@ -156,12 +156,16 @@ class crosscut(ThreeDScene):
 
         self.add(axes, label_x, label_y, label_z)
         # self.set_camera_orientation(zoom = 1, theta= -45*DEGREES, phi= 60*DEGREES)
+        # strike_slip = Arrow3D(start, start+[np.sqrt(0.125), 0, 0], thickness=0.02, height=0.1, base_radius=0.05).set_color(PURE_RED)
+        # self.add(strike_slip)
         # # test if projected strikes work
-        # # self.add(strikes_projected, *strike_labels_foot, *strike_labels_hanging, strikes_fault_projected, *strike_labels_fault, 
-        # #          strikes_hanging_trans_projected, *strike_labels_hanging_trans)
+        # self.add(strikes_projected, *strike_labels_foot, *strike_labels_hanging, strikes_fault_projected, *strike_labels_fault, 
+        #           strikes_hanging_trans_projected, *strike_labels_hanging_trans)
+        # self.add(strikes_fault_projected, *strike_labels_fault)
         # # test if 3D strikes work 
         # self.add(strikes_hanging, strikes_foot, Surf, strikes_hanging_trans)
         # # self.move_camera(phi= 90*DEGREES, theta= 0)
+        # self.add(strikes_hanging_trans, strikes_foot, Surf)
         # self.play(strikes_hanging_trans.animate.shift([0, -0.625/np.tan(np.radians(30)), -0.625]))
         # self.wait(1)
         # self.play(strikes_hanging_trans.animate.shift([np.sqrt(0.125), np.sqrt(0.125), 0]))
@@ -173,55 +177,55 @@ class crosscut(ThreeDScene):
 
         # add projected strikes and their labels
         self.set_camera_orientation(zoom = 1, theta= 0*DEGREES, phi= 0*DEGREES)
-        self.play(Create(strikes_hanging_trans_projected), Create(strikes_foot_projected))
+        self.play(Create(strikes_hanging_projected), Create(strikes_foot_projected))
         self.play(Create(strikes_fault_projected))
         self.wait(1)
         self.wait(1)
-        self.play(*self.Map(strike_labels_hanging_trans, Write))
+        self.play(*self.Map(strike_labels_hanging, Write))
         self.wait(1)
         self.play(*self.Map(strike_labels_foot, Write))
         self.wait(1)
         self.play(*self.Map(strike_labels_fault, Write))
         self.wait(2)
         
-        # remove projected strikes and labels and move camera to start rotation
-        self.play(Uncreate(strikes_hanging_trans_projected), 
+        # # remove projected strikes and labels and move camera to start rotation
+        self.play(Uncreate(strikes_hanging_projected), 
                   Uncreate(strikes_foot_projected), 
                   Uncreate(strikes_fault_projected), 
-                  *self.Map(strike_labels_hanging_trans, Unwrite), 
+                  *self.Map(strike_labels_hanging, Unwrite), 
                   *self.Map(strike_labels_foot, Unwrite), 
                   *self.Map(strike_labels_fault, Unwrite))
         self.move_camera(theta = -45*DEGREES, phi = 60*DEGREES)
         self.wait(1)
         
-        # add 3D Strikes and the fault surface and move camera to side to show height differencies
-        self.play(Create(strikes_hanging_trans), Create(strikes_foot), Create(Surf))
+        # # add 3D Strikes and the fault surface and move camera to side to show height differencies
+        self.play(Create(strikes_hanging), Create(strikes_foot), Create(Surf))
         self.wait(2)
         self.move_camera(theta= 0, phi = 90*DEGREES)
         self.play(Create(sprung), Write(label_sprung))
         self.wait(1)
         self.play(Create(disp_vector))
         self.wait(1)
-        self.play(strikes_hanging_trans.animate.shift([0, -0.625/np.tan(np.radians(30)), -0.625]))
+        self.play(strikes_hanging.animate.shift([0, -0.625/np.tan(np.radians(30)), -0.625]))
         self.play(Uncreate(sprung), Uncreate(label_sprung), Uncreate(disp_vector))
         self.wait(1)
-        self.move_camera(theta = -45*DEGREES, phi = 60*DEGREES)
-        start = strikes_hanging_trans[-1].get_center()
-        strike_slip = Arrow3D(start, start+[np.sqrt(0.125), np.sqrt(0.125), 0]).set_color(PURE_RED)
-        self.play(Create(strike_slip))
-        self.wait(1)
-        self.play(strikes_hanging_trans.animate.shift([np.sqrt(0.125), np.sqrt(0.125), 0]))
-        self.play(Uncreate(strike_slip))
-        self.wait(1)
+        # self.move_camera(theta = -45*DEGREES, phi = 60*DEGREES)
+        # start = strikes_hanging_trans[-1].get_center()
+        # strike_slip = Arrow3D(start, start+[np.sqrt(0.125), 0, 0], thickness=0.02, height=0.05, base_radius=0.05).set_color(PURE_RED)
+        # self.play(Create(strike_slip))
+        # self.wait(1)
+        # self.play(strikes_hanging_trans.animate.shift([np.sqrt(0.125), 0, 0]))
+        # self.play(Uncreate(strike_slip))
+        # self.wait(1)
         
         
         # move cam to 3D view, make lateral translation animation
-        # self.move_camera(theta = -45*DEGREES, phi = 60*DEGREES)
-        # self.wait(1)
-        # self.play(strikes_hanging.animate.shift([1, 1, 0]))
-        # self.play(strikes_hanging.animate.shift([-2, -2, 0]))
-        # self.play(strikes_hanging.animate.shift([1, 1, 0]))
-        # self.wait(1)
+        self.move_camera(theta = -45*DEGREES, phi = 60*DEGREES)
+        self.wait(1)
+        self.play(strikes_hanging.animate.shift([1, 0, 0]))
+        self.play(strikes_hanging.animate.shift([-2, 0, 0]))
+        self.play(strikes_hanging.animate.shift([1, 0, 0]))
+        self.wait(1)
         
         
         
